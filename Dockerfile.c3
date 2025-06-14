@@ -1,0 +1,11 @@
+FROM ubuntu:20.10
+
+# Cambiar los repositorios a 'old-releases' para poder instalar paquetes.
+RUN sed -i -re 's/([a-z]{2}\.)?archive.ubuntu.com|security.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list
+
+# Actualizar e instalar el cliente SSH y otras utilidades
+RUN apt-get update && apt-get install -y \
+    openssh-client \
+    iputils-ping \
+    vim \
+    && rm -rf /var/lib/apt/lists/*

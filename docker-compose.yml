@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  # Servidor S1
+  c4:
+    build:
+      context: .
+      dockerfile: Dockerfile.s1  # Usa el Dockerfile del servidor
+    container_name: C4
+    hostname: c4
+    networks:
+      - lab-net
+
+  # Cliente C1
+  c1:
+    build:
+      context: .
+      dockerfile: Dockerfile.c1  # Usa el Dockerfile de C1
+    container_name: C1
+    hostname: c1
+    command: tail -f /dev/null   # Mantiene el contenedor corriendo
+    networks:
+      - lab-net
+    depends_on:
+      - c4
+
+  # Cliente C2
+  c2:
+    build:
+      context: .
+      dockerfile: Dockerfile.c2  # Usa el Dockerfile de C2
+    container_name: C2
+    hostname: c2
+    command: tail -f /dev/null   # Mantiene el contenedor corriendo
+    networks:
+      - lab-net
+    depends_on:
+      - c4
+
+  # Cliente C3
+  c3:
+    build:
+      context: .
+      dockerfile: Dockerfile.c3  # Usa el Dockerfile de C3
+    container_name: C3
+    hostname: c3
+    command: tail -f /dev/null   # Mantiene el contenedor corriendo
+    networks:
+      - lab-net
+    depends_on:
+      - c4
+
+# Definicion de la red
+networks:
+  lab-net:
+    driver: bridge

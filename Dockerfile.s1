@@ -1,0 +1,33 @@
+FROM ubuntu:22.10
+
+# Cambiar los repositorios a 'old-releases' para poder instalar paquetes.
+RUN sed -i -re 's/([a-z]{2}\.)?archive.ubuntu.com|security.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list
+
+# Evitar preguntas interactivas
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Instalar cliente y SERVIDOR SSH, ademas de otras utilidades
+RUN apt-get update && apt-get install -y \
+    openssh-client \
+    openssh-server \
+    sudo \
+    iputils-ping \
+    vim \
+    && rm -rf /var/lib/apt/lists/*
+
+# Crear y configurar el usuario "prueba"
+RUN useradd -m -s /bin/bash prueba && \
+    echo "prueba:prueba" | chpasswd && \
+    adduser prueba sudo
+
+# Preparar y configurar el demonio de SSH (sshd)
+RUN mkdir -p /var/run/sshd && \
+    sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin no/' /etc/ssh/sshd_config && \
+    sed -i 's/#PasswordAuthentication yes/PasswordAuthentication yes/' /etc/ssh/sshd_config && \
+    sed -i 's@session\srequired\spam_loginuid.so@session optional pam_loginuid.so@g' /etc/pam.d/sshd
+
+# Exponer el puerto de SSH
+EXPOSE 22
+
+# Comando para arrancar el servidor SSH cuando el contenedor inicie
+CMD [ "/usr/sbin/sshd", "-D" ]
