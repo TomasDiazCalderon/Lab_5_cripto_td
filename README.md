@@ -18,6 +18,6 @@ Específicamente, el repositorio contiene:
 - Laboratorio5_imagenes.rar: Contiene las imágenes utilizadas en el informe del laboratorio.
 
 
-#Contacto
+# Contacto
 
 Correo: tomas.diaz_c@mail.udp.cl
